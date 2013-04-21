@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+  
+	<script type="text/javascript" src="javascript/jquery.cookie.js"></script>
+	<script type="text/javascript" src="javascript/jquery.collapsible.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		//collapsible management
+		$('.collapsible').collapsible({
+			defaultOpen: 'section1,section3'
+		});
+	});
+	
+	{
+    cssClose: 'collapse-close',
+    cssOpen: 'collapse-open',
+    cookieName: 'collapsible',
+    cookieOptions: {
+        path: '/',
+        expires: 7,
+        domain: '',
+        secure: ''
+    },
+    defaultOpen: '',
+    speed: 300,
+    bind: 'click',
+    animateOpen: function (elem, opts) {
+        elem.next().slideUp(opts.speed);
+    },
+    animateClose: function (elem, opts) {
+        elem.next().slideDown(opts.speed);
+    }
+}
+
+	</script>
+  
+  
+  <script>
+
+  </script>
+</head>
+<body style="font-size:62.5%;">
+  
+<h3 class="collapsible" id="section1">Heading<span></span><h3>
+<div class="container">
+    <div class="content">
+        <h3>Sample Content</h3>
+        <p>Content here....</p>
+    </div>
+</div>
+<h3 class="collapsible" id="section2">Heading<span></span><h3>
+<div class="container">
+    <div class="content">
+        <h3>Sample Content</h3>
+        <p>Content here....</p>
+    </div>
+</div>
+<h3 class="collapsible" id="section3">Heading<span></span><h3>
+<div class="container">
+    <div class="content">
+        <h3>Sample Content</h3>
+        <p>Content here....</p>
+    </div>
+</div>
+
+</body>
+</html>

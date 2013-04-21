@@ -1,0 +1,53 @@
+	.div-master{
+		/**/position:absolute; 
+		left:120px; 
+		top:30px;
+		border:10px solid #bbb;
+	}
+	.map-Div {
+		/**/position:relative;
+		float:left;
+		clear:left;
+		border:1px solid #bbb;
+		margin-top: 5px;
+		margin-right: 0px;
+		margin-bottom: 3px;
+		margin-left: 0px;
+		width:250px;
+	}
+		.map-Left {
+			/**/position:relative;	
+			float:left;
+			margin-left :0px;
+			margin-top :0px;			
+			padding : 3px;
+			color : #000000;
+		}	
+		.map-Centre {
+			/**/position:relative;
+			float:left;
+			margin-left :0px;
+			margin-top :0px;
+			color : #000000;
+			padding : 3px;
+		}
+		.map-Right {
+			/**/position:relative;
+			float:left;
+			margin-left :0px;
+			margin-top :0px;
+			color : #000000;
+			padding : 3px;
+		}
+			.map-Right-Content{
+				margin-left:50px;
+
+			}	
+		.slider{
+			margin: 10px;
+			width:50px;
+			padding : 3px;
+		}
+			#slider2{
+				margin-left:65px;
+			}

@@ -1,0 +1,61 @@
+/* 	html, body { height: 100%; width: 100%; margin: 0; padding: 0; } */
+	
+/* 	#map{padding:0;} */
+
+	.div-Master{
+		position:relative;
+		/*
+			right:20px; 
+			top:30px;
+			border:2px solid #bbb;
+		*/ 
+		
+		margin-left: 5px;  
+		margin-top: 5px;
+		margin-right: 5px;
+		margin-bottom: 5px;
+		width:250px;
+	}
+	.map-Div {
+		/**/position:relative;
+		float:left;
+		clear:left;
+		border:1px solid #bbb;
+		margin-top: 5px;
+		margin-right: 0px;
+		margin-bottom: 3px;
+		margin-left: 0px;
+		width:250px;
+	}
+		.map-Left {
+			/**/position:relative;	
+			float:left;
+			margin-left :0px;
+			margin-top :0px;			
+			padding : 3px;
+			color : #000000;
+		}	
+		.map-Centre {
+			/**/position:relative;
+			float:left;
+			margin-left :10px;
+			margin-top :0px;
+			color : #000000;
+			padding : 3px;
+		}
+		.map-Right {
+			/**/position:relative;
+			float:left;
+			margin-left :5px;
+			margin-top :0px;
+			color : #000000;
+			padding : 3px;
+		}
+			.map-Right-Content{
+				margin-left:30px;
+			}	
+			.slider{
+				margin: 10px;
+				width:100px;
+				padding : 3px;
+			}

@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title> </title>
+	
+	<style type="text/css">
+		#pnlAbutterSort { width: 100px; height: 70px; background: silver; }
+	</style>	
+	<link rel="stylesheet" type="text/css" href="layout.css">
+	
+	<!-- Load jQuery and jQuery UI via Google AJAX Libraries API -->
+    <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/redmond/jquery.ui.all.css" rel="Stylesheet" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+	
+    <script type="text/javascript">
+		jQuery(document).ready(function() {
+		  //Apply a draggable component
+		  makeEffects();
+		  
+		  //Add a click event to hide the content of the pane;
+		  // and resize the control and place it in a designated position.
+		});
+		
+		function makeEffects(){
+			$("#pnlAbutterSort").draggable();
+			$("#pnlAbutterSort").resizable();
+		}
+
+    </script>
+	
+  </head>
+
+  <body>
+   
+	<div id="pnlAbutterSort">
+	
+		Sort by <select name="ddlAbutterSort" id="ddlAbutterSort">
+		<option value="siteAddressSort">Address</option>
+		<option value="ownerName">Owner</option>
+		<option value="id">Property ID</option>
+		</select>
+	</div>
+  </body>
+</html>

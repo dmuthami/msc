@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/?v=3.0"></script>
+  
+ <script>
+	$(document).ready(function() {
+	$("#dialog").dialog();
+	});
+  
+	function wipeOut(elId){
+	if(dojo.style.getStyle(elId,"height")!='auto' && dojo.style.getStyle(elId,"height")!='100px' )return;
+	dojo.fx.wipeOut(dojo.byId(elId), 300);}
+				
+	function wipeIn(elId) {
+	if(dojo.style.getStyle(elId,"height")!='0px')return;
+	dojo.fx.wipeIn(dojo.byId(elId), 300);}
+	
+	function init(){
+	new dojo.dnd.HtmlDragSource("w1", "left");
+	new dojo.dnd.HtmlDragSource("w2", "left");
+	new dojo.dnd.HtmlDragSource("w3", "left");
+	new dojo.dnd.HtmlDragSource("w4", "right");
+	new dojo.dnd.HtmlDragSource("w5", "right");
+	new dojo.dnd.HtmlDragSource("w6", "right");
+	new dojo.dnd.HtmlDragSource("w7", "center");
+	new dojo.dnd.HtmlDragSource("w8", "center");
+	
+	new dojo.dnd.HtmlDropTarget("leftdiv", ["left","right"]);
+	new dojo.dnd.HtmlDropTarget("rightdiv",["left","right"]);
+	new dojo.dnd.HtmlDropTarget("centerdiv",["center"]);
+	}
+	
+	dojo.event.connect(dojo, "loaded", "init");
+
+  </script>
+
+</head>
+<body style="font-size:62.5%;">
+
+<table id="w1" cellspacing=0><tr class="TRtitle">
+	<td class="TDtitle">Dojo</td><td class="tdicons">
+	<IMG  onclick="wipeOut('l1')" alt=- src="images/minus.gif">
+	<IMG onclick="wipeIn('l1')" src="images/plus.gif" ></td></tr>
+	<tr><td colspan=2>
+	<div id="l1" class="DIVcontainer">
+	<div class="DIVinner">
+	Dojo is a cool javascript library.You can find more on DOJO here.This
+	example uses drag&drop and animations from Dojo
+	</div>
+	</div>
+	</td></tr>
+</table>
+
+
+  
+<div id="dialog" title="Dialog Title">I'm in a dialog</div>
+
+</body>
+</html>
