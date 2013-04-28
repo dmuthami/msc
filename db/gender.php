@@ -33,24 +33,30 @@
                     data: [
                         ['BOYS',  
 <?php
-$query2 = "SELECT COUNT(`name`) FROM `school` WHERE gender = 'BOYS ONLY';";
-$result2 = mysql_query($query2);
+//$query2 = "SELECT COUNT(`name`) FROM `school` WHERE gender = 'BOYS ONLY';";
+//$result2 = mysql_query($query2);
+
+$query_pg = "SELECT COUNT(name) FROM school WHERE gender = 'BOYS ONLY';";
+$result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
 
 
 //create combo box for webform
-while ($row2 = mysql_fetch_array($result2)) {
+while ($row2 = pg_fetch_array($result_pg)) {
     echo $row2[0];
 }
 ?>
                         ],
                         ['GIRLS',     
 <?php
-$query2 = "SELECT COUNT(`name`) FROM `school` WHERE gender = 'GIRLS ONLY';";
-$result2 = mysql_query($query2);
+//$query2 = "SELECT COUNT(`name`) FROM `school` WHERE gender = 'GIRLS ONLY';";
+//$result2 = mysql_query($query2);
+
+$query_pg = "SELECT COUNT(name) FROM school WHERE gender = 'GIRLS ONLY';";
+$result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
 
 
 //create combo box for webform
-while ($row2 = mysql_fetch_array($result2)) {
+while ($row2 = pg_fetch_array($result_pg)) {
     echo $row2[0];
 }
 ?>
@@ -59,12 +65,15 @@ while ($row2 = mysql_fetch_array($result2)) {
                         ['MIXED',   
 					
 <?php
-$query2 = "SELECT COUNT(`name`) FROM `school` WHERE gender = 'MIXED';";
-$result2 = mysql_query($query2);
+//$query2 = "SELECT COUNT(`name`) FROM `school` WHERE gender = 'MIXED';";
+//$result2 = mysql_query($query2);
+
+$query_pg = "SELECT COUNT(name) FROM school WHERE gender = 'MIXED';";
+$result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
 
 
 //create combo box for webform
-while ($row2 = mysql_fetch_array($result2)) {
+while ($row2 = pg_fetch_array($result_pg)) {
     echo $row2[0];
 }
 ?>

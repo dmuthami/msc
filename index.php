@@ -23,7 +23,7 @@ $y = $_GET["y"];
         <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.0/js/dojo/dijit/themes/claro/claro.css">    
         <link rel="stylesheet" type="text/css" href="css/layout.css">
         <link rel="stylesheet" type="text/css" href="css/jah.css">
-        
+
         <!-- ArcGIS Javascript Stylesheets -->    
         <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/2.5/js/esri/dijit/css/Popup.css"/>
         <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/2.0/js/dojo/dojox/grid/resources/Grid.css">
@@ -58,7 +58,11 @@ $y = $_GET["y"];
 
         <!-- Load jQuery and jQuery UI via Google AJAX Libraries API-->
         <link rel="stylesheet" href="js/themes/base/jquery.ui.all.css">
-        <script src="js/jquery-1.7.2.js"></script>
+        <!--
+        <link href="js/themes/cupertino/jquery-ui.css" 
+              rel="stylesheet" type="text/css"/>        
+        -->
+        <script src="js/jquery-1.9.1.js"></script>
         <script src="js/ui/jquery.ui.core.js"></script>
         <script src="js/ui/jquery.ui.widget.js"></script>
         <script src="js/ui/jquery.ui.mouse.js"></script>
@@ -68,6 +72,7 @@ $y = $_GET["y"];
         <script src="js/ui/jquery.ui.draggable.js"></script>
         <script src="js/ui/jquery.ui.position.js"></script>
         <script src="js/ui/jquery.ui.resizable.js"></script>
+        <script src="js/ui/jquery-ui.js"></script>
         <script src="js/ui/jquery.ui.dialog.js"></script>
 
         <!-- Reference highcharts-->
@@ -162,11 +167,16 @@ $y = $_GET["y"];
                     if ($(".btmiddle1").hasClass("bt")) {
                         $(".btmiddle1").removeClass("bt");
                         $(".btmiddle1").addClass("clicked");
-                        $("#filterz").show();
+                        //$("#filterz").show();
+                        console.log("Wow: showinging");
+                        $( ".filterz" ).dialog( "moveToTop" ); 	
+                        $( ".filterz" ).dialog({ show: "slow", height: "auto" });
                     } else {
                         $(".btmiddle1").removeClass("clicked");
                         $(".btmiddle1").addClass("bt");
-                        $("#filterz").hide();
+                        //$("#filterz").hide();
+                        console.log("Wow: dying");
+                        $( ".filterz" ).dialog({ hide: "explode" });
                     }
                 });
             });
@@ -189,7 +199,7 @@ $y = $_GET["y"];
                 });
             });
         </script>
-        
+
         <script>
             
             // increase the default animation speed to exaggerate the effect
@@ -239,10 +249,24 @@ $y = $_GET["y"];
 
             });
         </script>
+        <!--
+        Style the advanced tab window
+        -->
+        <script>
+            <!-- Enable tabs -->
+            $(function() {
 
+                $( "#tabz" ).tabs();
+
+            });
+            
+            $(function() {
+                $( "#filterz" ).dialog({width:"auto"});
+            });
+        </script>
 
         <!--
-        fixes or styles the div element for the charts
+            Fixes or styles the div element for the charts
         -->
         <style>
             div.panel {
@@ -251,10 +275,15 @@ $y = $_GET["y"];
                 height: 400px;
                 display: none;
             }
+            p
+            {
+                font-family:"Times New Roman";
+                font-size:10px;
+            }
         </style>
 
         <!--
-            Server side code required during inittialization process
+            Server side code required during initialization process
             After pulling all libraries from jquery thats when this maps should be loaded
         -->
         <?php
@@ -276,9 +305,9 @@ $y = $_GET["y"];
                     Share This
                     Switch Base Maps
                 -->
-		  <div id="box"  style="position:absolute; right:30%;  z-Index:999;">
+                <div id="box"  style="position:absolute; right:30%;  z-Index:999;">
                     <input type="text" name="searchz" id="searchz">
-                        <a href="javascript: searchz();" class="bt btleft">Search<span id="fungua"><img src="img/16table.png"/>&#9734; </span></a>
+                    <a href="javascript: searchz();" class="bt btleft">Search<span id="fungua"><img src="img/16table.png"/>&#9734; </span></a>
                     <a href="#" class="bt btmiddle">Reports <span>&#9660;</span></a>
                     <a href="#" class="bt btmiddle1">Filter <span>&#9660;</span></a>
                     <a href="#" class="bt btright">Switch Basemap <span>&#9660;</span></a>
@@ -287,158 +316,362 @@ $y = $_GET["y"];
                 <!--
                     Advanced query session goes here
                 -->                
-         
-                <!-- Section Drop down combo box for select constituency-->
-                <div id="filterz" style="position:absolute; left:8%; top:15%; z-Index:999;">
-                     <!-- Section for select constituencncy-->                   
-                    <select name="zote_a" id="zote_a" onchange="zote()">
-                        <!-- Value is null so that when user selects this option
-                            a null value is passed as argument thereby returning all records
-                            for constituency-->
-                        <option value="">Select Constituency</option>
-                        <!-- Subsequent options populated from the database through php-->
-                        <?php
-                            $query2 = "SELECT DISTINCT constituen FROM `grades`;";
-                            $result2 = mysql_query($query2);
-                            /*
-                             * create combo box for webform for constituencies
-                             * create options
-                             */
-                            while ($row2 = mysql_fetch_array($result2)) {
-                        ?>
-                                <font face="verdana" size ="0.5" color="green">
+
+                <!-- Section Drop down combo box for select constituency
+                                        style="position:absolute; left:8%; top:15%; z-Index:999;"
+                -->
+                <div id="filterz"  title="Basic dialog" style="z-Index:999;">
+                    <!-- Dialog box with tabs-->
+                    <div id="tabz">
+                        <ul>
+
+                            <li><a href="#tabs-1"><p>Wizard Query</p></a></li>
+
+                            <li><a href="#tabs-2">
+                                    <p>Results</p> 
+                                </a></li>
+
+                            <li><a href="#tabs-3">
+                                    <p>Advanced Query</p>
+                                </a></li>
+
+                        </ul>
+
+                        <!-- Wizard Query Tab-->
+                        <div id="tabs-1">
+                            Select Filters<br>
+
+                            <!-- Section for select constituency-->                   
+                            <select name="zote_a" id="zote_a" onchange="zote()">
+                                <!-- Value is null so that when user selects this option
+                                    a null value is passed as argument thereby returning all records
+                                    for constituency-->
+                                <option value="">Select Constituency</option>
+                                <!-- Subsequent options populated from the database through php-->
+                                <?php
+                                //$query2 = "SELECT DISTINCT constituen FROM `grades`;";
+                                //$result2 = mysql_query($query2);
+
+                                $query_pg = "SELECT DISTINCT constituency FROM grades;";
+                                $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
+
+                                /*
+                                 * create combo box for webform for constituencies
+                                 * create options
+                                 */
+                                while ($row2 = pg_fetch_array($result_pg)) {
+                                    ?>
+                                    <font face="verdana" size ="0.5" color="green">
                                     <option value="<?php echo $row2[0]; ?>">
                                         <?php echo $row2[0]; ?> 
                                     </option>
-                                </font>
-                                <?php
-                            }
+                                    </font>
+                                    <?php
+                                }
                                 ?>
-                    </select>
+                            </select><br><br>
 
-                    <!-- Section for select category of school-->
-                    <select name="zote_b" id="zote_b" onchange="zote()">
-                        <!-- Value is null so that when user selects this option
-                            a null value is passed as argument thereby returning all records
-                            for category-->
-                        <option value="">Select Category</option>
-                        <?php
-                            $query = "SELECT DISTINCT category FROM `school`;";
-                            $result = mysql_query($query);
-                            /*
-                             * create combo box for webform for constituencies
-                             * create options
-                             */
-                            while ($row = mysql_fetch_array($result)) {
-                        ?>
-                                <font face="verdana" size ="0.5" color="green">
+                            <!-- Section for select category of school-->
+                            <select name="zote_b" id="zote_b" onchange="zote()">
+                                <!-- Value is null so that when user selects this option
+                                    a null value is passed as argument thereby returning all records
+                                    for category-->
+                                <option value="">Select Category</option>
+                                <?php
+                                //$query = "SELECT DISTINCT category FROM `school`;";
+                                //$result = mysql_query($query);
+
+                                $query_pg = "SELECT DISTINCT category FROM school;";
+                                $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
+
+                                /*
+                                 * create combo box for webform for constituencies
+                                 * create options
+                                 */
+                                while ($row = pg_fetch_array($result_pg)) {
+                                    ?>
+                                    <font face="verdana" size ="0.5" color="green">
                                     <option value="<?php echo $row[0]; ?>">
                                         <?php echo $row[0]; ?></a> 
                                     </option>
-                                </font>
+                                    </font>
+                                    <?php
+                                }
+                                ?>
+                            </select><br><br>
+
+                            <!-- Section for select category of boarding or day school-->
+                            <select name="zote_c" id="zote_c" onchange="zote()" >
+                                <!-- Value is null so that when user selects this option
+                                    a null value is passed as argument thereby returning all records
+                                    for day or boarding-->
+                                <option value="">Select Day/Boarding</option>
                                 <?php
-                            }
-                                ?>
-                    </select>
+                                //$query2 = "SELECT DISTINCT day_or_boa FROM `school`;";
+                                //$result2 = mysql_query($query2);
 
-                    <!-- Section for select category of boarding or day school-->
-                    <select name="zote_c" id="zote_c" onchange="zote()" >
-                        <!-- Value is null so that when user selects this option
-                            a null value is passed as argument thereby returning all records
-                            for day or boarding-->
-                        <option value="">Select Day/Boarding</option>
-                        <?php
-                        $query2 = "SELECT DISTINCT day_or_boa FROM `school`;";
-                        $result2 = mysql_query($query2);
-                            /*
-                             * create combo box for webform for day or boarding
-                             * create options
-                             */
-                        while ($row2 = mysql_fetch_array($result2)) {
-                            ?>
-                            <font face="verdana" size ="0.5" color="green">
-                                <option value="<?php echo $row2[0]; ?>">
-                                    <?php echo $row2[0]; ?> 
-                                </option>
-                            </font>
-                            <?php
-                        }
-                            ?>
-                    </select>
+                                $query_pg = "SELECT DISTINCT day_or_boarding FROM school;";
+                                $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
 
-                    <!-- Section for select gender-->
-                    <select name="zote_d" id="zote_d" onchange="zote()">
-                        <!-- Value is null so that when user selects this option
-                            a null value is passed as argument thereby returning all records
-                            for  gender-->
-                        <option value="">Select Gender</option>
-                        <?php
-                            $query2 = "SELECT DISTINCT gender FROM `school`;";
-                            $result2 = mysql_query($query2);
-                            /*
-                             * create combo box for webform for day or boarding
-                             * create options
-                             */
-                            while ($row2 = mysql_fetch_array($result2)) {
-                        ?>
-                                <font face="verdana" size ="0.5" color="green">
-                                    <option value="<?php echo $row2[0]; ?>">
-                                        <?php echo $row2[0];?> 
-                                    </option>
-                                </font>
-                                <?php
-                            }
-                                ?>
-                    </select>
-                    
-                    <!-- Section for select special or ordinary-->
-                    <select name="zote_e" id="zote_e" onchange="zote()" >
-                        <!-- Value is null so that when user selects this option
-                            a null value is passed as argument thereby returning all records
-                            for ordinary or special-->
-                        <option value="">Select special/ordinary</option>
-                        <?php
-                            $query2 = "SELECT DISTINCT ordinary_o FROM `school`;";
-                            $result2 = mysql_query($query2);
-                            /*
-                             * create combo box for webform for ordinary or special
-                             * create options
-                             */
-                        while ($row2 = mysql_fetch_array($result2)) {
-                            ?>
-                            <font face="verdana" size ="0.5" color="green">
-                            <option value="<?php echo $row2[0]; ?>"><?php echo $row2[0]; ?> </option>
-                            </font>
-                            <?php
-                        }
-                        ?>
-                    </select>
-
-                    <!-- Section for select sponsor-->
-                    <select name="zote_f" id="zote_f" onchange="zote()>
-                        <!-- Value is null so that when user selects this option
-                            a null value is passed as argument thereby returning all records
-                            for sponsor-->
-                        <option value="">Select Sponsor</option>
-                        <?php
-                            $query2 = "SELECT DISTINCT sponsor FROM `shule`;";
-                            $result2 = mysql_query($query2);
-                            /*
-                             * create combo box for webform for sponsor
-                             * create options
-                             */
-                            while ($row2 = mysql_fetch_array($result2)) {
-                                ?>
-                                <font face="verdana" size ="0.5" color="green">
+                                /*
+                                 * create combo box for webform for day or boarding
+                                 * create options
+                                 */
+                                while ($row2 = pg_fetch_array($result_pg)) {
+                                    ?>
+                                    <font face="verdana" size ="0.5" color="green">
                                     <option value="<?php echo $row2[0]; ?>">
                                         <?php echo $row2[0]; ?> 
                                     </option>
-                                </font>
-                                <?php
-                            }
+                                    </font>
+                                    <?php
+                                }
                                 ?>
-                    </select>
- 
+                            </select><br><br>
+
+                            <!-- Section for select gender-->
+                            <select name="zote_d" id="zote_d" onchange="zote()">
+                                <!-- Value is null so that when user selects this option
+                                    a null value is passed as argument thereby returning all records
+                                    for  gender-->
+                                <option value="">Select Gender</option>
+                                <?php
+                                //$query2 = "SELECT DISTINCT gender FROM `school`;";
+                                //$result2 = mysql_query($query2);
+
+                                $query_pg = "SELECT DISTINCT gender FROM school;";
+                                $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
+
+                                /*
+                                 * create combo box for webform for day or boarding
+                                 * create options
+                                 */
+                                while ($row2 = pg_fetch_array($result_pg)) {
+                                    ?>
+                                    <font face="verdana" size ="0.5" color="green">
+                                    <option value="<?php echo $row2[0]; ?>">
+                                        <?php echo $row2[0]; ?> 
+                                    </option>
+                                    </font>
+                                    <?php
+                                }
+                                ?>
+                            </select><br><br>
+
+                            <!-- Section for select special or ordinary-->
+                            <select name="zote_e" id="zote_e" onchange="zote()" >
+                                <!-- Value is null so that when user selects this option
+                                    a null value is passed as argument thereby returning all records
+                                    for ordinary or special-->
+                                <option value="">Select Special/Ordinary</option>
+                                <?php
+                                //$query2 = "SELECT DISTINCT ordinary_o FROM `school`;";
+                                //$result2 = mysql_query($query2);
+
+                                $query_pg = "SELECT DISTINCT ordinary_or_special FROM school;";
+                                $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
+
+                                /*
+                                 * create combo box for webform for ordinary or special
+                                 * create options
+                                 */
+                                while ($row2 = pg_fetch_array($result_pg)) {
+                                    ?>
+                                    <font face="verdana" size ="0.5" color="green">
+                                    <option value="<?php echo $row2[0]; ?>"><?php echo $row2[0]; ?> </option>
+                                    </font>
+                                    <?php
+                                }
+                                ?>
+                            </select><br><br>
+
+                            <!-- Section for select sponsor-->
+                            <select name="zote_f" id="zote_f" onchange="zote()">
+                                <!-- Value is null so that when user selects this option 
+                                    a null value is passed as argument thereby returning all records 
+                                    for sponsor -->
+                                <option value="">Select Sponsor</option>
+                                <?php
+                                //$query2 = "SELECT DISTINCT sponsor FROM `shule`;";
+                                //$result2 = mysql_query($query2);
+
+                                $query_pg = "SELECT DISTINCT sponsor FROM shule;";
+                                $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
+
+                                /*
+                                 * create combo box for webform for sponsor
+                                 * create options
+                                 */
+                                while ($row2 = pg_fetch_array($result_pg)) {
+                                    ?>
+                                    <font face="verdana" size ="0.5" color="green">
+                                    <option value="<?php echo $row2[0]; ?>">
+                                        <?php echo $row2[0]; ?> 
+                                    </option>
+                                    </font>
+                                    <?php
+                                }
+                                ?>
+                            </select><br><br>
+
+                        </div>
+
+                        <!-- Pick Standard Queries-->
+                        <div id="tabs-2">
+                            <!-- Place the sql query as a value to be parsed -->
+                            Select<br>
+                            <select name="Pick Query" id="idPickQuery" onchange="topTenSchools()">
+                                <!-- Value is null so that when user selects this option
+                                    a null value is passed as argument thereby returning all records
+                                    for constituency-->
+                                <option value="1">Top Ten Schools</option>
+                                <option value="2">Top Ten Girls Schools</option>
+                                <option value="3">Top Ten Girls Schools</option>
+                            </select>
+                            <br> In <br>
+                            <!-- 
+                                Select year and automatically all top schools in that year are 
+                                displayed in the map
+                            -->
+                            <select name="Pick Year" id="idPickYear" onchange="topTenSchools()">
+                                <option value="">Select Year</option>
+                                <?php
+                                $query_pg = "SELECT DISTINCT year FROM grades ORDER BY year ASC;";
+                                $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
+
+                                //create combo box for webform
+                                while ($row2 = pg_fetch_array($result_pg)) {
+                                    ?>
+
+                                    <font face="verdana" size ="0.5" color="green">
+                                    <option value="<?php echo $row2[0]; ?>"><?php echo $row2[0]; ?> </option>
+                                    </font>
+                                    <?php
+                                }
+                                ?>                                
+                            </select>
+                            <br>Limit<br>
+                            <select name="Limit" id="idLimit" onchange="topTenSchools()">
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <br>
+                        </div>
+                        
+                        <div id="tabs-3">
+                            Select Schools in<br>
+                            <select name="Constituency" id="idConstituency" onchange="spatialQuery()">
+                                <option value="">Constituency</option>
+                                <?php
+                                $query_pg = "SELECT DISTINCT constituen FROM constituency ORDER BY constituen ASC;";
+                                $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
+
+                                //create combo box for webform
+                                while ($row2 = pg_fetch_array($result_pg)) {
+                                    ?>
+
+                                    <font face="verdana" size ="0.5" color="green">
+                                    <option value="<?php echo $row2[0]; ?>"><?php echo $row2[0]; ?> </option>
+                                    </font>
+                                    <?php
+                                }
+                                ?>                                
+                            </select><br>
+                            Filter by<br>
+                            Sponsor                          
+                            <select name="Sponsor" id="idSponsor" onchange="spatialQuery()">
+                                <option value="">Sponsor</option>
+                                <?php
+                                $query_pg = "SELECT DISTINCT sponsor FROM sponsor ORDER BY sponsor ASC;";
+                                $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
+
+                                //create combo box for webform
+                                while ($row2 = pg_fetch_array($result_pg)) {
+                                    ?>
+
+                                    <font face="verdana" size ="0.5" color="green">
+                                    <option value="<?php echo $row2[0]; ?>"><?php echo $row2[0]; ?> </option>
+                                    </font>
+                                    <?php
+                                }
+                                ?>                                
+                            </select><br>                          
+                            Gender
+                            <select name="Gender" id="idGender" onchange="spatialQuery()">
+                                <option value="">Gender</option>
+                                <?php
+                                $query_pg = "SELECT DISTINCT gender FROM school ORDER BY gender ASC;";
+                                $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
+
+                                //create combo box for webform
+                                while ($row2 = pg_fetch_array($result_pg)) {
+                                    ?>
+
+                                    <font face="verdana" size ="0.5" color="green">
+                                    <option value="<?php echo $row2[0]; ?>"><?php echo $row2[0]; ?> </option>
+                                    </font>
+                                    <?php
+                                }
+                                ?>                                
+                            </select><br>
+                            Day/Boarding
+                            <select name="Day_Boarding" id="idDayOrBoarding" onchange="spatialQuery()">
+                                <option value="">Day/Boarding</option>
+                                <?php
+                                $query_pg = "SELECT DISTINCT day_or_boarding FROM school ORDER BY day_or_boarding ASC;";
+                                $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
+
+                                //create combo box for webform
+                                while ($row2 = pg_fetch_array($result_pg)) {
+                                    ?>
+
+                                    <font face="verdana" size ="0.5" color="green">
+                                    <option value="<?php echo $row2[0]; ?>"><?php echo $row2[0]; ?> </option>
+                                    </font>
+                                    <?php
+                                }
+                                ?>                                
+                            </select><br>
+                            Ordinary/Special
+                            <select name="Ordinary_Special" id="idOrdinary_Special" onchange="spatialQuery()">
+                                <option value="">Ordinary/Special</option>
+                                <?php
+                                $query_pg = "SELECT DISTINCT ordinary_or_special FROM school ORDER BY ordinary_or_special ASC;";
+                                $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
+
+                                //create combo box for webform
+                                while ($row2 = pg_fetch_array($result_pg)) {
+                                    ?>
+
+                                    <font face="verdana" size ="0.5" color="green">
+                                    <option value="<?php echo $row2[0]; ?>"><?php echo $row2[0]; ?> </option>
+                                    </font>
+                                    <?php
+                                }
+                                ?>                                
+                            </select><br>
+                            Category
+                            <select name="Category" id="idCategory" onchange="spatialQuery()">
+                                <option value="">Category</option>
+                                <?php
+                                $query_pg = "SELECT DISTINCT category FROM school ORDER BY category ASC;";
+                                $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
+
+                                //create combo box for webform
+                                while ($row2 = pg_fetch_array($result_pg)) {
+                                    ?>
+
+                                    <font face="verdana" size ="0.5" color="green">
+                                    <option value="<?php echo $row2[0]; ?>"><?php echo $row2[0]; ?> </option>
+                                    </font>
+                                    <?php
+                                }
+                                ?>                                
+                            </select><br>  
+                        </div>
+                    </div>
                 </div>                              
 
                 <!--
@@ -473,14 +706,6 @@ $y = $_GET["y"];
                 </div>
 
                 <!--
-					!!!!!!!!!!!!This is to be removed!!!!!!!!!!!!!!!!
-                -->				
-                <div id="gallery" dojoType="dijit.layout.ContentPane" style="position:absolute; width:55%; top:20%; left:20%; height:auto; z-Index:999; overflow:auto;">
-                    <div id="basemapGallery" >
-					</div>
-				</div>
-
-                <!--
                  Div element that displays the filters 
                      Filter By Category
                      Filter By Constituency
@@ -492,22 +717,30 @@ $y = $_GET["y"];
 
                 <div style="position:absolute; right:10px; top:10px; z-Index:999;">
                     <div id="accordion" STYLE="font-family: Arial Black; width:auto; font-size: 10px; color: black">
-                    <!-- Section for filter by category-->
+                        <!-- Section for filter by category-->
                         <div class="group">
                             <h3><a href="#">Filter By Category</a></h3>
                             <div>
                                 <form>
                                     <!-- 
+                                        Select categories of school
                                         On change function calls jin_ajax_loop() 
                                     -->
                                     <select name="typo" id="typo" onchange="jin_ajax_loop()">
                                         <option value="">Select Category</option>
                                         <?php
-                                        $query = "SELECT DISTINCT category FROM `school`;";
-                                        $result = mysql_query($query);
+                                        /*
+                                         *                                         
+                                         * 
+                                         * $query = "SELECT DISTINCT category FROM `school`;";
+                                         * $result = mysql_query($query);
+                                         */
 
+                                        $query_pg = "SELECT DISTINCT category FROM shule;";
+                                        $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
 
-                                        while ($row = mysql_fetch_array($result)) {
+                                        //$row = mysql_fetch_array($result)
+                                        while ($row = pg_fetch_array($result_pg)) {
                                             ?>
                                             <font face="verdana" size ="0.5" color="green">
                                             <option value="<?php echo $row[0]; ?>"><?php echo $row[0]; ?></a> </option>
@@ -520,7 +753,9 @@ $y = $_GET["y"];
                                 </form>
                             </div>
                         </div>
-                    <!-- Section for filter by constituency-->
+                        <!-- Section for filter by constituency
+                            onchange event calls sectag()
+                        -->
                         <div class="group">
                             <h3><a href="#">Filter By Constituency</a></h3>
                             <div>
@@ -528,11 +763,16 @@ $y = $_GET["y"];
                                 <select name="sectac" id="sectac" onchange="sectac()">
                                     <option value="">Select Constituency</option>
                                     <?php
-                                    $query2 = "SELECT DISTINCT constituen FROM `grades`;";
-                                    $result2 = mysql_query($query2);
+                                    /*
+                                     * $query2 = "SELECT DISTINCT constituen FROM `grades`;";
+                                      $result2 = mysql_query($query2);
+                                     */
+
+                                    $query_pg2 = "SELECT DISTINCT constituency FROM grades;";
+                                    $result_pg2 = pg_query($conn, $query_pg2) or die("<font color='red'>Eeeek! Could not query</font>");
 
                                     //create combo box for webform
-                                    while ($row2 = mysql_fetch_array($result2)) {
+                                    while ($row2 = pg_fetch_array($result_pg2)) {
                                         ?>
 
                                         <font face="verdana" size ="0.5" color="green">
@@ -545,19 +785,20 @@ $y = $_GET["y"];
                                 </select>
                             </div>
                         </div>
-                    <!-- Section for filter by gender-->
+                        <!-- Section for filter by gender
+                            onchange event calls secta()
+                        -->
                         <div class="group">
                             <h3><a href="#gender">Filter By Gender</a></h3>
                             <div>
                                 <select name="secta" id="secta" onchange="secta()">
                                     <option value="">Select Gender</option>
                                     <?php
-                                    $query2 = "SELECT DISTINCT gender FROM `school`;";
-                                    $result2 = mysql_query($query2);
+                                    $query_pg = "SELECT DISTINCT gender FROM school;";
+                                    $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
 
-
-//create combo box for webform
-                                    while ($row2 = mysql_fetch_array($result2)) {
+                                    //create combo box for webform
+                                    while ($row2 = pg_fetch_array($result_pg)) {
                                         ?>
 
                                         <font face="verdana" size ="0.5" color="green">
@@ -569,17 +810,19 @@ $y = $_GET["y"];
                                 </select>
                             </div>
                         </div>
-                    <!-- Section for filter by sponsor-->
+                        <!-- Section for filter by sponsor
+                            onchange event calls sectax()
+                        -->
                         <div class="group">
                             <h3><a href="#">Filter By Sponsor</a></h3>
                             <div>
                                 <select name="sectax" id="sectax" onchange="sectax()">
                                     <option value="">Select ...</option>
                                     <?php
-                                    $query2 = "SELECT DISTINCT sponsor FROM `shule`;";
-                                    $result2 = mysql_query($query2);
+                                    $query_pg = "SELECT DISTINCT sponsor FROM shule;";
+                                    $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
 
-                                    while ($row2 = mysql_fetch_array($result2)) {
+                                    while ($row2 = pg_fetch_array($result_pg)) {
                                         ?>
 
                                         <font face="verdana" size ="0.5" color="green">
@@ -591,19 +834,20 @@ $y = $_GET["y"];
                                 </select>
                             </div>
                         </div>
-                    <!-- Section for filter by boarding-->
+                        <!-- Section for filter by boarding
+                            onchange event calls sectaz()
+                        -->
                         <div class="group">
                             <h3><a href="#">Filter By Boarding</a></h3>
                             <div>
                                 <select name="sectaz" id="sectaz" onchange="sectaz()">
                                     <option value="">Select ...</option>
                                     <?php
-                                    $query2 = "SELECT DISTINCT day_or_boa FROM `school`;";
-                                    $result2 = mysql_query($query2);
+                                    $query_pg = "SELECT DISTINCT day_or_boarding FROM school;";
+                                    $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
 
-
-//create combo box for webform
-                                    while ($row2 = mysql_fetch_array($result2)) {
+                                    //create combo box for webform
+                                    while ($row2 = pg_fetch_array($result_pg)) {
                                         ?>
 
                                         <font face="verdana" size ="0.5" color="green">
@@ -615,19 +859,21 @@ $y = $_GET["y"];
                                 </select>
                             </div>
                         </div>	
-                    <!-- Section for filter by grades-->
+                        <!-- Section for filter by grades
+                            onchange event calls sectag()
+                        -->
                         <div class="group">
                             <h3><a href="#"><b>Filter By Grades</b></a></h3>
                             <div>
                                 <select name="sectag" id="sectag" >
                                     <option value="">Select Grade</option>
                                     <?php
-                                    $query2 = "SELECT DISTINCT grade_attained FROM `grades` ORDER BY grade_attained ASC;";
-                                    $result2 = mysql_query($query2);
+                                    $query_pg = "SELECT DISTINCT grade_attained FROM grades ORDER BY grade_attained ASC;";
+                                    $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
 
 
-//create combo box for webform
-                                    while ($row2 = mysql_fetch_array($result2)) {
+                                    //create combo box for webform
+                                    while ($row2 = pg_fetch_array($result_pg)) {
                                         ?>
 
                                         <font face="verdana" size ="0.5" color="green">
@@ -637,15 +883,17 @@ $y = $_GET["y"];
                                     }
                                     ?>
                                 </select>
+                                <!-- Select year from the database
+                                    onchange event calls sectag()
+                                -->
                                 <select name="sectay" id="sectay" onchange="sectag()">
                                     <option value="">Select Year</option>
                                     <?php
-                                    $query2 = "SELECT DISTINCT `year` FROM `grades` ORDER BY `year` ASC;";
-                                    $result2 = mysql_query($query2);
-
+                                    $query_pg = "SELECT DISTINCT year FROM grades ORDER BY year ASC;";
+                                    $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
 
 //create combo box for webform
-                                    while ($row2 = mysql_fetch_array($result2)) {
+                                    while ($row2 = pg_fetch_array($result_pg)) {
                                         ?>
 
                                         <font face="verdana" size ="0.5" color="green">
