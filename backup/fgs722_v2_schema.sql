@@ -360,6 +360,7 @@ CREATE OR REPLACE VIEW grades AS
 		school.address AS address,
 	 	school.category AS category,
 	 	school.gender AS gender,
+                school.constituency, 
 	 	school.day_or_boarding AS day_or_boa,
 	 	school.ordinary_or_special AS ordinary_o,
 	 	school.enrollment AS enrollment,

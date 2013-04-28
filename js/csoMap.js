@@ -44,6 +44,7 @@ function initBaseMap() {
 	map.addLayer(initBasemap);
 	createBasemapGallery();
         
+        //loads ArcGIS Online dynamic map services
         loadLocalBaseMaps(map);
         
 	//schools map object
@@ -106,11 +107,14 @@ function initBaseMap() {
 
 var shulemap;
 function loadLocalBaseMaps(map){
-    try{		
+    try{
+        
         //schools map object
         shulemap = new esri.layers.ArcGISDynamicMapServiceLayer("http://168.63.184.124:6080/arcgis/rest/services/Base_Layers/MapServer");
         //add the schools map layer
         map.addLayer(shulemap);
+        //push this maps id into an array
+        layerArr.push(shulemap.id);
 
     }
     catch(ex){console.log("csoSearch:callCreatesearchDropDownWindow = "+ ex);}
@@ -209,17 +213,26 @@ function callCreateMapsDropDownWindow(){
                 //mapStartX = 80;
                 mapStartY = 23;
 
-                //get x coordinate of box and to its width and a constant 15 
+                //get x coordinate of box add to its width and a constant 15 
                 //to allow for spacing
                 mapStartX  =parseInt($('#box').offset().left) + parseInt($('#box').width()) + 15;
                 //Default delta x and y movements in the negative direction
                 mapDeltaX = 0;
                 //mapDeltaX = -($('#map').width() * 0.70);
                 //mapDeltaY = 40;
+                
                 mapDeltaY = (($('#map').height() * 60)/100);
+
+                
         }
         catch(ex){console.log("initiliazeMapVariables function = "+ ex);}
-        finally{} 
+        finally{
+                console.log("Start X: "+mapStartX);
+                console.log("Start Y: "+mapStartY);
+                console.log("Default Delta DX: "+mapDeltaX);
+                console.log("Default Delta DY: "+mapDeltaY);           
+            
+        } 
  }
  
 /*
@@ -352,14 +365,27 @@ function manipulateMapWindow (elem, minOrMax, id) {
 				 * conduct some animation
 				 * Return maps container to original position by setting some parameters
 				 */
-				diffTop =  document.getElementById("dragTitle" + String(id)).style.top.slice(0,-2); //remove the px bit
-				diffLeft =  document.getElementById("dragTitle" + String(id)).style.left.slice(0,-2);//remove the px bit
-				deltaY = Number(diffTop) - Number(mapStartY);
-				deltaX = Number(diffLeft) - Number(mapStartX);
-				if (deltaX<61){deltaX = mapDeltaX;}
-				if (deltaY<41){deltaY = mapDeltaY;}
-				marginTop = "-="+ AddPx(deltaY);
-				marginLeft = "-=" + AddPx(deltaX);
+				//diffTop =  document.getElementById("dragTitle" + String(id)).style.top.slice(0,-2); //remove the px bit
+				//diffLeft =  document.getElementById("dragTitle" + String(id)).style.left.slice(0,-2);//remove the px bit
+                                //deltaY = Number(diffTop) - Number(mapStartY);
+				//deltaX = Number(diffLeft) - Number(mapStartX);
+ 				var x1= parseInt($('#dragTitle'+ String(id)).offset().left);
+                                var y1= parseInt($('#dragTitle'+ String(id)).offset().top);  
+                                deltaX= Math.abs(x1-parseInt(mapStartX));
+                                deltaY= Math.abs(y1-parseInt(mapStartY));
+				//if (deltaX<61){deltaX = mapDeltaX;}
+				//if (deltaY<41){deltaY = mapDeltaY;}
+                                //X position
+                                if(x1<mapStartX)
+                                {marginLeft = "+=" + AddPx(deltaX);}
+                                else {marginLeft = "-=" + AddPx(deltaX);}
+                                //Y position
+                                if(y1<mapStartY)
+                                {marginTop = "+="+ AddPx(deltaY);}
+                                else {mmarginTop = "-="+ AddPx(deltaY);}
+                                
+				//marginTop = "-="+ AddPx(deltaY);
+				//marginLeft = "-=" + AddPx(deltaX);
 				mapWinSizeToPass = parseInt(mapWindow_intial);
 				animateCompleteCallBackFunction();
 			}else{//maximize both title div and content div
@@ -368,13 +394,17 @@ function manipulateMapWindow (elem, minOrMax, id) {
 				 * subtract above from default map start x and map start y
 				 * if less than above then apply default movement else move with new displacement vector 
 				 */
-				diffTop =  document.getElementById("dragTitle" + String(id)).style.top.slice(0,-2); //remove the px bit;
-				diffLeft =  document.getElementById("dragTitle" + String(id)).style.left.slice(0,-2); //remove the px bit;;}
+				//diffTop =  document.getElementById("dragTitle" + String(id)).style.top.slice(0,-2); //remove the px bit;
+				//diffLeft =  document.getElementById("dragTitle" + String(id)).style.left.slice(0,-2); //remove the px bit;;}
   				/*
   				 * Move only by default increments
   				 */
+                                var x1= parseInt($('#dragTitle'+ String(id)).offset().left);
+                                var y1= parseInt($('#dragTitle'+ String(id)).offset().top); 
 				deltaX = mapDeltaX;
 				deltaY = mapDeltaY;
+                                //deltaX=x1-parseInt(mapStartX);
+                                //deltaY=y1-parseInt(mapStartY);
 				marginTop = "+="+ AddPx(deltaY);
 				marginLeft = "+=" + AddPx(deltaX);
 				mapWinSizeToPass = parseInt(mapWindow_expanded);
@@ -385,8 +415,15 @@ function manipulateMapWindow (elem, minOrMax, id) {
 	}
 	catch(ex){console.log("csoWin:init = "+ ex);}
 	finally {
-		console.log("diffTop = "+ diffTop + " diffLeft = "+ diffLeft);
-		console.log("deltaX = "+ deltaX + " deltaY = "+ deltaY);
+                //What is the new position
+                console.log(" left = "+ x1);
+		console.log(" top = "+ y1);
+                //new deltas after move
+                console.log(" deltaX = "+ deltaX);
+		console.log(" deltay = "+ deltaY);
+                //Default deltas go here
+		console.log("mapDeltaX = "+ mapDeltaX );
+		console.log("mapDeltaY = "+ mapDeltaY);
 	}
 };
 
@@ -797,7 +834,11 @@ function printMapButtonEvents(){
 //----------------------------------------------------Begin WMS Code---------------------------------------------
 
 //var map; Already defined above
+/*
+ *An array of all dynamic maps services
+ */
 var layerArr = new Array();
+
 /*
  * This loads the base layers
  * However this function has been replaced by anoher function above 
@@ -1243,6 +1284,7 @@ function provinceWMS(){
 
 /*
  * Remove all dynamic layers
+ * Does this remove even Esri dynamic map services?
  * Called when swithching between geoserver layers
  */
 function removeAllWMSLayers(){

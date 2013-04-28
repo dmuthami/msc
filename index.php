@@ -892,7 +892,7 @@ $y = $_GET["y"];
                                     $query_pg = "SELECT DISTINCT year FROM grades ORDER BY year ASC;";
                                     $result_pg = pg_query($conn, $query_pg) or die("<font color='red'>Eeeek! Could not query</font>");
 
-//create combo box for webform
+                                    //create combo box for webform
                                     while ($row2 = pg_fetch_array($result_pg)) {
                                         ?>
 

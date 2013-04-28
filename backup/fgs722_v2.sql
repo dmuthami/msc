@@ -460,7 +460,7 @@ ALTER TABLE public.sponsor OWNER TO postgres;
 --
 
 CREATE VIEW shule AS
-    SELECT sponsor.sponsor, school.school_code AS school_cod, school.name, school.address, school.category, school.gender, school.day_or_boarding AS day_or_boa, school.ordinary_or_special AS ordinary_o, school.enrollment, school.teaching_staff AS teaching_s, school.pupil_teacher_ratio AS pupil_teac, school.tsc_male_teachers AS tsc_male_t, school.tsc_female_teachers AS tsc_female, school.local_authority_male_teachers AS local_auth, school.latt, school.longg FROM (sponsor JOIN school ON ((school.sponsor_id = sponsor.sponsor_id)));
+    SELECT sponsor.sponsor, school.school_code AS school_cod, school.name, school.address, school.category, school.gender, school.constituency, school.day_or_boarding AS day_or_boa, school.ordinary_or_special AS ordinary_o, school.enrollment, school.teaching_staff AS teaching_s, school.pupil_teacher_ratio AS pupil_teac, school.tsc_male_teachers AS tsc_male_t, school.tsc_female_teachers AS tsc_female, school.local_authority_male_teachers AS local_auth, school.latt, school.longg FROM (sponsor JOIN school ON ((school.sponsor_id = sponsor.sponsor_id)));
 
 
 ALTER TABLE public.shule OWNER TO postgres;
